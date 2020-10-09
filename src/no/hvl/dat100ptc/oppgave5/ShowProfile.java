@@ -28,13 +28,6 @@ public class ShowProfile extends EasyGraphics {
 		gpspoints = gpscomputer.getGPSPoints();
 		
 	}
-	
-	public ShowProfile(String filename) {
-		gpscomputer = new GPSComputer(filename);
-
-		gpspoints = gpscomputer.getGPSPoints();
-
-	}
 
 	public static void main(String[] args) {
 		launch(args);

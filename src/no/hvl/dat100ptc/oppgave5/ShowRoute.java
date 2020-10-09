@@ -24,13 +24,6 @@ public class ShowRoute extends EasyGraphics {
 		gpspoints = gpscomputer.getGPSPoints();
 
 	}
-	
-	public ShowRoute(String filename) {
-		gpscomputer = new GPSComputer(filename);
-
-		gpspoints = gpscomputer.getGPSPoints();
-
-	}
 
 	public static void main(String[] args) {
 		launch(args);
@@ -51,9 +44,7 @@ public class ShowRoute extends EasyGraphics {
 		double maxlon = GPSUtils.findMax(GPSUtils.getLongitudes(gpspoints));
 		double minlon = GPSUtils.findMin(GPSUtils.getLongitudes(gpspoints));
 
-		double xstep = MAPXSIZE / (Math.abs(maxlon - minlon)); 
-
-		return xstep;
+		return MAPXSIZE / (Math.abs(maxlon - minlon));
 	}
 
 	// antall y-pixels per breddegrad
@@ -61,22 +52,15 @@ public class ShowRoute extends EasyGraphics {
 	
 		double maxlat = GPSUtils.findMax(GPSUtils.getLatitudes(gpspoints));
 		double minlat = GPSUtils.findMin(GPSUtils.getLatitudes(gpspoints));
-		
-		double ystep = MAPYSIZE / (Math.abs(maxlat - minlat));
 				
-		return ystep;
+		return MAPYSIZE / (Math.abs(maxlat - minlat));
 		
 	}
 
 	public void showRouteMap(int ybase) {
 		
-		// setSpeed tar kun int mellom 1-10, og hastighetene kommer oppi 49, må derfor skalere ned for å få den innenfor 1-10.
-		int SPEED_SCALE = 5; 
-		
-		int x, y, circleId;
-		
-		int radius = 4;
-		int radiusRider = 5;
+		int x, y;
+		int RADIUS = 4;
 		
 		// Finner første X og første Y
 		int firstX = MARGIN + (int) ((gpspoints[0].getLongitude() - GPSUtils.findMin(GPSUtils.getLongitudes(gpspoints))) * xstep());
@@ -85,11 +69,20 @@ public class ShowRoute extends EasyGraphics {
 		setColor(0, 255, 0);
 		
 		// Tegner første sirkel
-		fillCircle(firstX, firstY, radius);
+		fillCircle(firstX, firstY, RADIUS);
 		
+		double elevation = 0;
 		for(int i = 1; i < gpspoints.length; i++) {
 			x = MARGIN + (int) ((gpspoints[i].getLongitude() - GPSUtils.findMin(GPSUtils.getLongitudes(gpspoints))) * xstep());
 			y = ybase - (int) ((gpspoints[i].getLatitude() - GPSUtils.findMin(GPSUtils.getLatitudes(gpspoints))) * ystep());
+			
+			// Tegn røde prikker og streker dersom stigning, ellers tegn grønne prikker
+			if (gpspoints[i].getElevation() > elevation) {
+				setColor(255, 0, 0);
+			} else if (gpspoints[i].getElevation() < elevation){
+				setColor(0, 255, 0);
+			}
+			elevation = gpspoints[i].getElevation();
 			
 			// Tegner strekene mellom
 			drawLine(firstX, firstY, x, y);
@@ -97,15 +90,22 @@ public class ShowRoute extends EasyGraphics {
 			firstY = y;
 			
 			// Tegn punktene
-			fillCircle(x, y, radius);
+			fillCircle(x, y, RADIUS);
 		}
-		// Blå prikk følger etter ruten er tegnet
+		moveRider(ybase);
+	}
+	
+	public void moveRider(int ybase) {
+		// setSpeed tar kun int mellom 1-10, og hastighetene kommer oppi 49, må derfor skalere ned for å få den innenfor 1-10.
+		int SPEED_SCALE = 5;
+		int RADIUSRIDER = 5;
+		int x, y;
 		
-		firstX = MARGIN + (int) ((gpspoints[0].getLongitude() - GPSUtils.findMin(GPSUtils.getLongitudes(gpspoints))) * xstep());
-		firstY = ybase - (int) ((gpspoints[0].getLatitude() - GPSUtils.findMin(GPSUtils.getLatitudes(gpspoints))) * ystep());
+		int firstX = MARGIN + (int) ((gpspoints[0].getLongitude() - GPSUtils.findMin(GPSUtils.getLongitudes(gpspoints))) * xstep());
+		int firstY = ybase - (int) ((gpspoints[0].getLatitude() - GPSUtils.findMin(GPSUtils.getLatitudes(gpspoints))) * ystep());
 		
 		setColor(0, 0, 255);
-		circleId = fillCircle(firstX, firstY, radiusRider);
+		int rider = fillCircle(firstX, firstY, RADIUSRIDER);
 		
 		for(int i = 0; i < gpspoints.length; i++) {
 			if(i < gpspoints.length - 1) {
@@ -115,7 +115,7 @@ public class ShowRoute extends EasyGraphics {
 			x = MARGIN + (int) ((gpspoints[i].getLongitude() - GPSUtils.findMin(GPSUtils.getLongitudes(gpspoints))) * xstep());
 			y = ybase - (int) ((gpspoints[i].getLatitude() - GPSUtils.findMin(GPSUtils.getLatitudes(gpspoints))) * ystep());
 			
-			moveCircle(circleId, x, y);
+			moveCircle(rider, x, y);
 		}
 	}
 
@@ -147,7 +147,7 @@ public class ShowRoute extends EasyGraphics {
 		}
 	}
 	
-	public String formatString(String s) {
+	public static String formatString(String s) {
 		
 		int TEXTWIDTH = 15;
 		
