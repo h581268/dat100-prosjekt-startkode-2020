@@ -3,12 +3,13 @@ package no.hvl.dat100ptc.oppgave6;
 import javax.swing.JOptionPane;
 
 import easygraphics.*;
-import no.hvl.dat100ptc.TODO;
 import no.hvl.dat100ptc.oppgave1.GPSPoint;
 import no.hvl.dat100ptc.oppgave2.GPSData;
 import no.hvl.dat100ptc.oppgave2.GPSDataFileReader;
 import no.hvl.dat100ptc.oppgave3.GPSUtils;
 import no.hvl.dat100ptc.oppgave4.GPSComputer;
+import no.hvl.dat100ptc.oppgave5.ShowProfile;
+import no.hvl.dat100ptc.oppgave5.ShowRoute;
 
 public class CycleComputer extends EasyGraphics {
 
@@ -29,12 +30,17 @@ public class CycleComputer extends EasyGraphics {
 	private double minlon, minlat, maxlon, maxlat;
 
 	private double xstep, ystep;
+	
+	private ShowRoute route;
+	private ShowProfile profile;
 
 	public CycleComputer() {
 
 		String filename = JOptionPane.showInputDialog("GPS data filnavn: ");
 
 		gpscomp = new GPSComputer(filename);
+		route = new ShowRoute(filename);
+		profile = new ShowProfile(filename);
 		gpspoints = gpscomp.getGPSPoints();
 
 	}
@@ -63,22 +69,20 @@ public class CycleComputer extends EasyGraphics {
 		bikeRoute();
 
 	}
-
 	
 	public void bikeRoute() {
 
-		throw new UnsupportedOperationException(TODO.method());
-
+		
 	}
 
 	public double xstep() {
 
-		throw new UnsupportedOperationException(TODO.method());
+		return 0;
 	}
 
 	public double ystep() {
 
-		throw new UnsupportedOperationException(TODO.method());
+		return 0;
 	}
 
 }

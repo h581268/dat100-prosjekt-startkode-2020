@@ -65,22 +65,14 @@ public class GPSUtils {
 
 	public static double distance(GPSPoint gpspoint1, GPSPoint gpspoint2) {
 
-		double d, latitude1, longitude1, latitude2, longitude2;
+		double d;
 		
-		latitude1 = gpspoint1.getLatitude();
-		longitude1 = gpspoint1.getLongitude();
+		double lat1rad = toRadians(gpspoint1.getLatitude());
 		
-		latitude2 = gpspoint2.getLatitude();
-		longitude2 = gpspoint2.getLongitude();
-		
-		double lat1rad = toRadians(latitude1);
-		double long1rad = toRadians(longitude1);
-		
-		double lat2rad = toRadians(latitude2);
-		double long2rad = toRadians(longitude2);
+		double lat2rad = toRadians(gpspoint2.getLatitude());
 		
 		double deltaLat = lat2rad - lat1rad;
-		double deltaLong = long2rad - long1rad;
+		double deltaLong = toRadians(gpspoint2.getLongitude() - gpspoint1.getLongitude());
 		
 		double a = pow(sin(deltaLat/2), 2) + cos(lat1rad) * cos(lat2rad) * pow(sin(deltaLong/2), 2);
 		double c = 2 * atan2(sqrt(a), sqrt(1 - a));
@@ -93,13 +85,9 @@ public class GPSUtils {
 
 	public static double speed(GPSPoint gpspoint1, GPSPoint gpspoint2) {
 
-		int secs;
-		double speed;
-
-		secs = gpspoint2.getTime() - gpspoint1.getTime();
+		int secs = gpspoint2.getTime() - gpspoint1.getTime();
 		
-		speed = ((distance(gpspoint1, gpspoint2)/secs)*3600)/1000;
-		return speed;
+		return distance(gpspoint1, gpspoint2) / secs * 3600 / 1000;
 	}
 
 	public static String formatTime(int secs) {
@@ -121,7 +109,7 @@ public class GPSUtils {
 			str += " ";
 		}
 	
-		str += doubleAsString.replace(',','.');
-		return str;
+		str += doubleAsString;
+		return str.replace(',','.');
 	}
 }

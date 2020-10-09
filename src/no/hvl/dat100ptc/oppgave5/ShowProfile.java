@@ -17,14 +17,23 @@ public class ShowProfile extends EasyGraphics {
 	private static int MAXBARHEIGHT = 500; // assume no height above 500 meters
 	
 	private GPSPoint[] gpspoints;
+	
+	private GPSComputer gpscomputer;
 
 	public ShowProfile() {
 
 		String filename = JOptionPane.showInputDialog("GPS data filnavn: ");
-		GPSComputer gpscomputer =  new GPSComputer(filename);
+		gpscomputer =  new GPSComputer(filename);
 
 		gpspoints = gpscomputer.getGPSPoints();
 		
+	}
+	
+	public ShowProfile(String filename) {
+		gpscomputer = new GPSComputer(filename);
+
+		gpspoints = gpscomputer.getGPSPoints();
+
 	}
 
 	public static void main(String[] args) {
@@ -45,11 +54,19 @@ public class ShowProfile extends EasyGraphics {
 
 		// ybase indicates the position on the y-axis where the columns should start
 	
-		int x = MARGIN,y;
+		int x = MARGIN;
+		
+		// Ekstra oppgave 6.b
+		int skalering = Integer.parseInt(getText("Skalering i millisekunder:")); // Skalering pauser tegning i antall ms skrevet. 1000 vil da tegne en strek per sekund.
+
 		for(int i = 0; i < gpspoints.length; i++) {
+			
+			int elevation = (int) (gpspoints[i].getElevation()) > 0 ? (int) (gpspoints[i].getElevation()) : 0;
+			
 			setColor(0, 0, 255);
-			drawLine(x + i*3, ybase, x+i*3, ybase-(int) (gpspoints[i].getElevation() > 0 ? gpspoints[i].getElevation() : 0));
-		}		
+			drawLine(x + i*3, ybase, x+i*3, ybase-elevation);
+			pause(skalering);
+		}
 	}
 
 }

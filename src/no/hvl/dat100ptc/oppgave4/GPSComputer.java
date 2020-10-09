@@ -1,9 +1,11 @@
 package no.hvl.dat100ptc.oppgave4;
 
-import no.hvl.dat100ptc.TODO;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.stream.Collectors;
+
 import no.hvl.dat100ptc.oppgave1.GPSPoint;
 import no.hvl.dat100ptc.oppgave2.GPSData;
-import no.hvl.dat100ptc.oppgave2.GPSDataConverter;
 import no.hvl.dat100ptc.oppgave2.GPSDataFileReader;
 import no.hvl.dat100ptc.oppgave3.GPSUtils;
 
@@ -28,7 +30,7 @@ public class GPSComputer {
 	
 	// beregn total distances (i meter)
 	public double totalDistance() {
-
+				
 		double distance = 0;
 
 		for(int i = 0; i < gpspoints.length - 1; i++) {
@@ -41,6 +43,8 @@ public class GPSComputer {
 
 	// beregn totale høydemeter (i meter)
 	public double totalElevation() {
+		
+		// return Arrays.stream(gpspoints).mapToDouble(point -> point.getElevation()).reduce(0, (a, b) -> a + b);
 
 		double elevation = 0;
 		
@@ -82,19 +86,31 @@ public class GPSComputer {
 		return maxspeed;
 		
 	}
+	
+	public double[] climbs() {
+		// Bruker liste siden vi ikke vet antall stigninger i en løype, og lister er dynamisk i størrelse.
+		ArrayList<Double> climbs = new ArrayList<>();
+		
+		for(int i = 0; i < gpspoints.length - 1; i++) {
+			if (gpspoints[i].getElevation() > 0) {
+				climbs.add(gpspoints[i].getElevation()/GPSUtils.distance(gpspoints[i], gpspoints[i + 1])*100);
+			}
+		}
+		
+		return climbs.stream().mapToDouble(climb -> climb).toArray();
+	}
+	
+	public double maxClimb() {
+		
+		double[] climbs = climbs();
+		
+		return Arrays.stream(climbs).reduce(climbs[0], (a, b) -> a > b ? a : b);
+		
+	}
 
 	public double averageSpeed() {
 		
-		double distance = 0;
-		double time = 0;
-
-		
-		for(int i = 0; i < gpspoints.length - 1; i++) {
-			distance += GPSUtils.distance(gpspoints[i], gpspoints[i + 1]);
-			time += gpspoints[i + 1].getTime() - gpspoints[i].getTime();
-		}
-		
-		return ((distance / time) * 3600)/1000;	
+		return totalDistance() / totalTime() * 3600 / 1000;
 	}
 
 	/*
@@ -134,14 +150,8 @@ public class GPSComputer {
 	}
 
 	public double totalKcal(double weight) {
-
-		double totalkcal = 0;
 		
-		double[] speeds = speeds();
-		for(int i = 0; i < gpspoints.length - 1; i++)	{
-			totalkcal += kcal(weight, gpspoints[i + 1].getTime() - gpspoints[i].getTime(), speeds[i]);
-		}
-		return totalkcal;
+		return kcal(weight, totalTime(), averageSpeed());
 	}
 	
 	private static double WEIGHT = 80.0;

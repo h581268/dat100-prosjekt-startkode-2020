@@ -1,8 +1,5 @@
 package no.hvl.dat100ptc.oppgave2;
 
-import java.time.LocalDateTime;
-
-import no.hvl.dat100ptc.TODO;
 import no.hvl.dat100ptc.oppgave1.GPSPoint;
 
 public class GPSData {
