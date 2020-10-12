@@ -60,37 +60,42 @@ public class ShowRoute extends EasyGraphics {
 	public void showRouteMap(int ybase) {
 		
 		int x, y;
+		int firstX = 0;
+		int firstY = 0;
+		double elevation = 0.0;
 		int RADIUS = 4;
 		
-		// Finner første X og første Y
-		int firstX = MARGIN + (int) ((gpspoints[0].getLongitude() - GPSUtils.findMin(GPSUtils.getLongitudes(gpspoints))) * xstep());
-		int firstY = ybase - (int) ((gpspoints[0].getLatitude() - GPSUtils.findMin(GPSUtils.getLatitudes(gpspoints))) * ystep());
-
 		setColor(0, 255, 0);
 		
-		// Tegner første sirkel
-		fillCircle(firstX, firstY, RADIUS);
-		
-		double elevation = 0;
-		for(int i = 1; i < gpspoints.length; i++) {
+		for(int i = 0; i < gpspoints.length; i++) {
+			
 			x = MARGIN + (int) ((gpspoints[i].getLongitude() - GPSUtils.findMin(GPSUtils.getLongitudes(gpspoints))) * xstep());
 			y = ybase - (int) ((gpspoints[i].getLatitude() - GPSUtils.findMin(GPSUtils.getLatitudes(gpspoints))) * ystep());
 			
-			// Tegn røde prikker og streker dersom stigning, ellers tegn grønne prikker
-			if (gpspoints[i].getElevation() > elevation) {
-				setColor(255, 0, 0);
-			} else if (gpspoints[i].getElevation() < elevation){
-				setColor(0, 255, 0);
+			if(i < 1) {
+				// Setter første X og Y
+				firstX = x;
+				firstY = y;
+				// Tegner første sirkel
+				fillCircle(firstX, firstY, RADIUS);
+			} else {
+				
+				// Tegn røde prikker og streker dersom stigning, ellers tegn grønne prikker
+				if (gpspoints[i].getElevation() > elevation) {
+					setColor(255, 0, 0);
+				} else if (gpspoints[i].getElevation() < elevation){
+					setColor(0, 255, 0);
+				}
+				elevation = gpspoints[i].getElevation();
+				
+				// Tegner strekene mellom
+				drawLine(firstX, firstY, x, y);
+				firstX = x;
+				firstY = y;
+				
+				// Tegn punktene
+				fillCircle(x, y, RADIUS);
 			}
-			elevation = gpspoints[i].getElevation();
-			
-			// Tegner strekene mellom
-			drawLine(firstX, firstY, x, y);
-			firstX = x;
-			firstY = y;
-			
-			// Tegn punktene
-			fillCircle(x, y, RADIUS);
 		}
 		moveRider(ybase);
 	}

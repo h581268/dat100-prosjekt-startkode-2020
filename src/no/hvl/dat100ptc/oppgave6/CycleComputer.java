@@ -78,39 +78,40 @@ public class CycleComputer extends EasyGraphics {
 	public void drawRoute(int ybase) {
 		
 		int x, y;
-		int RADIUS = 4;
+		int firstX = 0;
+		int firstY = 0;
 		double elevation = 0;
+		int RADIUS = 4;
 		
 		setColor(0, 255, 0);
 		
-		// Finner x og y for første gps punkt
-		int firstX = MARGIN + (int) ((gpspoints[0].getLongitude() - GPSUtils.findMin(GPSUtils.getLongitudes(gpspoints))) * xstep);
-		int firstY = ybase - (int) ((gpspoints[0].getLatitude() - GPSUtils.findMin(GPSUtils.getLatitudes(gpspoints))) * ystep/1.5); // deler på 1.5 for å senke høyden på ruten så den passer i vinduet
-
-		// Tegner første sirkel
-		fillCircle(firstX, firstY, RADIUS);
-		
-		// for løkke for å tegne ruten.
-		for(int i = 1; i < gpspoints.length; i++) {
-			// Setter x og y for nåværende punkt
+		for(int i = 0; i < gpspoints.length; i++) {
 			x = MARGIN + (int) ((gpspoints[i].getLongitude() - GPSUtils.findMin(GPSUtils.getLongitudes(gpspoints))) * xstep);
-			y = ybase - (int) ((gpspoints[i].getLatitude() - GPSUtils.findMin(GPSUtils.getLatitudes(gpspoints))) * ystep/1.5); // deler på 1.5 for å senke høyden på ruten så den passer i vinduet
+			y = ybase - (int) ((gpspoints[i].getLatitude() - GPSUtils.findMin(GPSUtils.getLatitudes(gpspoints))) * ystep/1.5);
 			
-			// Tegn røde prikker og streker dersom stigning, ellers tegn grønne prikker
-			if (gpspoints[i].getElevation() > elevation) {
-				setColor(255, 0, 0);
-			} else if (gpspoints[i].getElevation() < elevation){
-				setColor(0, 255, 0);
+			if(i < 1) {
+				// Setter første X og Y
+				firstX = x;
+				firstY = y;
+				// Tegner første sirkel
+				fillCircle(firstX, firstY, RADIUS);
+			} else {
+				// Tegn røde prikker og streker dersom stigning, ellers tegn grønne prikker
+				if (gpspoints[i].getElevation() > elevation) {
+					setColor(255, 0, 0);
+				} else if (gpspoints[i].getElevation() < elevation){
+					setColor(0, 255, 0);
+				}
+				elevation = gpspoints[i].getElevation();
+				
+				// Tegner strekene mellom
+				drawLine(firstX, firstY, x, y);
+				firstX = x;
+				firstY = y;
+				
+				// Tegn punktene
+				fillCircle(x, y, RADIUS);
 			}
-			elevation = gpspoints[i].getElevation();
-			
-			// Tegner strekene mellom
-			drawLine(firstX, firstY, x, y);
-			firstX = x;
-			firstY = y;
-			
-			// Tegn punktene
-			fillCircle(x, y, RADIUS);
 		}
 		startSimulation(ybase);
 	}
@@ -127,8 +128,8 @@ public class CycleComputer extends EasyGraphics {
 		setColor(0, 0, 255);
 		
 		// Finner x og y for første punkt
-		int firstX = MARGIN + (int) ((gpspoints[0].getLongitude() - GPSUtils.findMin(GPSUtils.getLongitudes(gpspoints))) * xstep());
-		int firstY = ybase - (int) ((gpspoints[0].getLatitude() - GPSUtils.findMin(GPSUtils.getLatitudes(gpspoints))) * ystep()/1.5);
+		int firstX = MARGIN + (int) ((gpspoints[0].getLongitude() - GPSUtils.findMin(GPSUtils.getLongitudes(gpspoints))) * xstep);
+		int firstY = ybase - (int) ((gpspoints[0].getLatitude() - GPSUtils.findMin(GPSUtils.getLatitudes(gpspoints))) * ystep/1.5);
 		
 		// Prikk som simulerer syklist i løypen
 		int riderId = fillCircle(firstX, firstY, RADIUSRIDER);
@@ -171,8 +172,8 @@ public class CycleComputer extends EasyGraphics {
 			}
 			
 			// Skalerer long og lat til en pixel på skjermen ved hjelp at ystep og xstep.
-			x = MARGIN + (int) ((gpspoints[i].getLongitude() - GPSUtils.findMin(GPSUtils.getLongitudes(gpspoints))) * xstep());
-			y = ybase - (int) ((gpspoints[i].getLatitude() - GPSUtils.findMin(GPSUtils.getLatitudes(gpspoints))) * ystep()/1.5);
+			x = MARGIN + (int) ((gpspoints[i].getLongitude() - GPSUtils.findMin(GPSUtils.getLongitudes(gpspoints))) * xstep);
+			y = ybase - (int) ((gpspoints[i].getLatitude() - GPSUtils.findMin(GPSUtils.getLatitudes(gpspoints))) * ystep/1.5);
 			
 			setColor(0, 0, 255);
 			// Tegner elevasjonslinje

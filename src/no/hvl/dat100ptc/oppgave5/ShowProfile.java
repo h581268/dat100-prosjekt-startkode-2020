@@ -48,6 +48,7 @@ public class ShowProfile extends EasyGraphics {
 		// ybase indicates the position on the y-axis where the columns should start
 	
 		int x = MARGIN;
+		int SPACE = 3;
 		
 		// Ekstra oppgave 6.b
 		int skalering = Integer.parseInt(getText("Skalering i millisekunder:")); // Skalering pauser tegning i antall ms skrevet. 1000 vil da tegne en strek per sekund.
@@ -57,7 +58,7 @@ public class ShowProfile extends EasyGraphics {
 			int elevation = (int) (gpspoints[i].getElevation()) > 0 ? (int) (gpspoints[i].getElevation()) : 0;
 			
 			setColor(0, 0, 255);
-			drawLine(x + i*3, ybase, x+i*3, ybase-elevation);
+			drawLine(x + i*SPACE, ybase, x+i*SPACE, ybase-elevation);
 			pause(skalering);
 		}
 	}
