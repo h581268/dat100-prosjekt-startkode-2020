@@ -87,8 +87,11 @@ public class GPSComputer {
 		ArrayList<Double> climbs = new ArrayList<>();
 		
 		for(int i = 0; i < gpspoints.length - 1; i++) {
-			if (gpspoints[i].getElevation() > 0) {
-				climbs.add(gpspoints[i].getElevation()/GPSUtils.distance(gpspoints[i], gpspoints[i + 1])*100);
+			
+			double x = Math.sqrt(Math.pow(GPSUtils.distance(gpspoints[i], gpspoints[i + 1]), 2) - (gpspoints[i + 1].getElevation() - gpspoints[i].getElevation()));
+			
+			if (gpspoints[i + 1].getElevation() - gpspoints[i].getElevation() > 0) {
+				climbs.add((gpspoints[i + 1].getElevation() - gpspoints[i].getElevation())/x);
 			}
 		}
 		
@@ -105,7 +108,7 @@ public class GPSComputer {
 
 	public double averageSpeed() {
 		
-		return totalDistance() / totalTime() * 3600 / 1000;
+		return totalDistance() / totalTime() * 3600.0 / 1000.0;
 	}
 
 	/*
@@ -135,7 +138,7 @@ public class GPSComputer {
 			met = 8.0;
 		} else if(speedmph < 16.0) {
 			met = 10.0;
-		} else if(speedmph < 18.0) {
+		} else if(speedmph < 20.0) {
 			met = 12.0;
 		} else {
 			met = 16.0;
@@ -157,6 +160,7 @@ public class GPSComputer {
 		System.out.println("Total time\t:" + GPSUtils.formatTime(totalTime()));
 		System.out.println("Total distance\t:" + GPSUtils.formatDouble(totalDistance()/1000) + " km");
 		System.out.println("Total elevation\t:" + GPSUtils.formatDouble(totalElevation()) + " m");
+		System.out.println("Max Stigning\t:" + GPSUtils.formatDouble(maxClimb()) + " %");
 		System.out.println("Max speed\t:" + GPSUtils.formatDouble(maxSpeed()) + " km/t");
 		System.out.println("Average speed\t:" + GPSUtils.formatDouble(averageSpeed()) + " km/t");
 		System.out.println("Energy\t\t:" + GPSUtils.formatDouble(totalKcal(WEIGHT)) + " kcal");
