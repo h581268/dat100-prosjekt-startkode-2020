@@ -133,7 +133,7 @@ public class CycleComputer extends EasyGraphics {
 		
 		// Prikk som simulerer syklist i løypen
 		int riderId = fillCircle(firstX, firstY, RADIUSRIDER);
-		
+		int time = 0;
 		// For løkke for å tegne rytter langs rute sammen med stigning.
 		for(int i = 0; i < gpspoints.length; i++) {
 			
@@ -145,15 +145,17 @@ public class CycleComputer extends EasyGraphics {
 				
 				setColor(0,0,0);
 				setFont("Courier",12);
+				
+				time += gpspoints[i + 1].getTime() - gpspoints[i].getTime();
 
 				int timeText = drawString("Time", TEXTDISTANCE, TEXTDISTANCE + 0*TEXTDISTANCE);
-				int timeValue = drawString(" :" + ShowRoute.formatString(GPSUtils.formatTime(gpspoints[i].getTime())), TEXTDISTANCE*5, TEXTDISTANCE + 0*TEXTDISTANCE);
+				int timeValue = drawString(" :" + GPSUtils.formatTime(time), TEXTDISTANCE*5, TEXTDISTANCE + 0*TEXTDISTANCE);
 				int elevationText = drawString("Elevation", TEXTDISTANCE, TEXTDISTANCE + 1*TEXTDISTANCE);
-				int elevationValue = drawString(" :" + ShowRoute.formatString(GPSUtils.formatDouble(gpspoints[i].getElevation())) + " m", TEXTDISTANCE*5, TEXTDISTANCE + 1*TEXTDISTANCE);
+				int elevationValue = drawString(" :" + GPSUtils.formatDouble(gpspoints[i].getElevation()) + " m", TEXTDISTANCE*5, TEXTDISTANCE + 1*TEXTDISTANCE);
 				int distanceText = drawString("Distance", TEXTDISTANCE, TEXTDISTANCE + 2*TEXTDISTANCE);
-				int distanceValue = drawString(" :" + ShowRoute.formatString(GPSUtils.formatDouble(distance += GPSUtils.distance(gpspoints[i], gpspoints[i + 1])/1000)) + " km", TEXTDISTANCE*5, TEXTDISTANCE + 2*TEXTDISTANCE);
+				int distanceValue = drawString(" :" + GPSUtils.formatDouble(distance += GPSUtils.distance(gpspoints[i], gpspoints[i + 1])/1000) + " km", TEXTDISTANCE*5, TEXTDISTANCE + 2*TEXTDISTANCE);
 				int speedText = drawString("Speed", TEXTDISTANCE, TEXTDISTANCE + 3*TEXTDISTANCE);
-				int speedValue = drawString(" :" + ShowRoute.formatString(GPSUtils.formatDouble(GPSUtils.speed(gpspoints[i], gpspoints[i + 1]))) + " km/t", TEXTDISTANCE*5, TEXTDISTANCE + 3*TEXTDISTANCE);
+				int speedValue = drawString(" :" + GPSUtils.formatDouble(GPSUtils.speed(gpspoints[i], gpspoints[i + 1])) + " km/t", TEXTDISTANCE*5, TEXTDISTANCE + 3*TEXTDISTANCE);
 				
 				setVisible(timeText, false);
 				setVisible(timeValue, false);

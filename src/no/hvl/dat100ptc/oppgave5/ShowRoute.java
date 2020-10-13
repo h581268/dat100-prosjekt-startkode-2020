@@ -86,6 +86,7 @@ public class ShowRoute extends EasyGraphics {
 				} else if (gpspoints[i].getElevation() < elevation){
 					setColor(0, 255, 0);
 				}
+				
 				elevation = gpspoints[i].getElevation();
 				
 				// Tegner strekene mellom
@@ -139,28 +140,16 @@ public class ShowRoute extends EasyGraphics {
 							"Average speed", 
 							"Energy"};
 		
-		String statistics[] = {	formatString(GPSUtils.formatTime(gpscomputer.totalTime())),
-								formatString(GPSUtils.formatDouble(gpscomputer.totalDistance()/1000)) + " km", 
-								formatString(GPSUtils.formatDouble(gpscomputer.totalElevation())) + " m",
-								formatString(GPSUtils.formatDouble(gpscomputer.maxSpeed())) + " km/t",
-								formatString(GPSUtils.formatDouble(gpscomputer.averageSpeed())) + " km/t", 
-								formatString(GPSUtils.formatDouble(gpscomputer.totalKcal(WEIGHT))) + " kcal"};
+		String statistics[] = {	GPSUtils.formatTime(gpscomputer.totalTime()),
+								GPSUtils.formatDouble(gpscomputer.totalDistance()/1000) + " km", 
+								GPSUtils.formatDouble(gpscomputer.totalElevation()) + " m",
+								GPSUtils.formatDouble(gpscomputer.maxSpeed()) + " km/t",
+								GPSUtils.formatDouble(gpscomputer.averageSpeed()) + " km/t", 
+								GPSUtils.formatDouble(gpscomputer.totalKcal(WEIGHT)) + " kcal"};
 		
 		for(int i = 0; i < statistics.length; i++) {
 			drawString(text[i], TEXTDISTANCE, TEXTDISTANCE + i*TEXTDISTANCE);
 			drawString(" :" + statistics[i], TEXTDISTANCE*5, TEXTDISTANCE + i*TEXTDISTANCE);
 		}
-	}
-	
-	public static String formatString(String s) {
-		
-		int TEXTWIDTH = 15;
-		
-		String str = "";
-		for (int i = 0; i < TEXTWIDTH - s.length(); i++) {
-			str += " ";
-		}
-		
-		return str += s;
 	}
 }
