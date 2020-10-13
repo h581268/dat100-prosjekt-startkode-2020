@@ -87,14 +87,22 @@ public class GPSComputer {
 		ArrayList<Double> climbs = new ArrayList<>();
 		
 		for(int i = 0; i < gpspoints.length - 1; i++) {
+			// Finner avstanden mellom 2 punkt
+			double distance = GPSUtils.distance(gpspoints[i], gpspoints[i + 1]);
+			// Finner stigningsforskjellen mellom 2 punkt
+			double elevation = gpspoints[i + 1].getElevation() - gpspoints[i].getElevation();
+			// Finner hosliggende katet i en rettvinklet trekant
+			double adjacent = Math.sqrt(Math.pow(distance, 2) - Math.pow(elevation, 2));
+			// Finner vinkelen i trekanten
+			double angle = Math.atan(elevation/adjacent);
 			
-			double x = Math.sqrt(Math.pow(GPSUtils.distance(gpspoints[i], gpspoints[i + 1]), 2) - (gpspoints[i + 1].getElevation() - gpspoints[i].getElevation()));
-			
-			if (gpspoints[i + 1].getElevation() - gpspoints[i].getElevation() > 0) {
-				climbs.add((gpspoints[i + 1].getElevation() - gpspoints[i].getElevation())/x);
+			// Dersom det er en stigningsforskjell som er i positiv retning.
+			if ( elevation > 0) {
+				// Legg til stigning i % til listen med stigninger.
+				climbs.add(Math.tan(Math.toRadians(angle))*100);
 			}
 		}
-		
+		// Converterer listen til en array og returnerer
 		return climbs.stream().mapToDouble(climb -> climb).toArray();
 	}
 	
