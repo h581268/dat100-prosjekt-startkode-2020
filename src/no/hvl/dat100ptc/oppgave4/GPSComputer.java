@@ -82,6 +82,7 @@ public class GPSComputer {
 		
 	}
 	
+	// Oppg. 6a
 	public double[] climbs() {
 		// Bruker liste siden vi ikke vet antall stigninger i en løype, og lister er dynamisk i størrelse.
 		ArrayList<Double> climbs = new ArrayList<>();
@@ -106,6 +107,7 @@ public class GPSComputer {
 		return climbs.stream().mapToDouble(climb -> climb).toArray();
 	}
 	
+	// Oppg. 6a
 	public double maxClimb() {
 		
 		double[] climbs = climbs();
@@ -168,7 +170,7 @@ public class GPSComputer {
 		System.out.println("Total time\t:" + GPSUtils.formatTime(totalTime()));
 		System.out.println("Total distance\t:" + GPSUtils.formatDouble(totalDistance()/1000) + " km");
 		System.out.println("Total elevation\t:" + GPSUtils.formatDouble(totalElevation()) + " m");
-		System.out.println("Max Stigning\t:" + GPSUtils.formatDouble(maxClimb()) + " %");
+		System.out.println("Max Stigning\t:" + GPSUtils.formatDouble(maxClimb()) + " %"); // Oppgave 6a
 		System.out.println("Max speed\t:" + GPSUtils.formatDouble(maxSpeed()) + " km/t");
 		System.out.println("Average speed\t:" + GPSUtils.formatDouble(averageSpeed()) + " km/t");
 		System.out.println("Energy\t\t:" + GPSUtils.formatDouble(totalKcal(WEIGHT)) + " kcal");
